@@ -13,9 +13,13 @@ code {
 }
 
 #todoList{
-  margin-left: 20%;
+  margin-left: 15%;
+  margin-right: 15%;
   font-size: large;
   margin-bottom: 2%;
+}
+#values{
+  background-color: rgb(196, 228, 163);
 }
 #editBox{
   margin-left: 3%;
