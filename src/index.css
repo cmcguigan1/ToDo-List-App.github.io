@@ -32,3 +32,8 @@ h1{
   margin-left: 5%;
   margin-right: 5%;
 }
+.delete{
+  float: right;
+  margin-right: 1%;
+  margin-top: 0.05%;
+}

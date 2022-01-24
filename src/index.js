@@ -31,9 +31,12 @@ const reducer = (state, action) => {
             }
             });
         case "ADD":
-            //console.log(state);
-            const lastTodo = state[state.length - 1];
-            const newNum = lastTodo.id + 1; 
+            let newNum = 1;
+            if(state.length>0){
+                //console.log(state);
+                const lastTodo = state[state.length - 1];
+                newNum = lastTodo.id + 1; 
+            }
             const newTodo = {
                 id: newNum, 
                 title: "ToDo " + newNum + " : ",
@@ -62,7 +65,30 @@ const reducer = (state, action) => {
                 } else {
                     return todo;
             }
-            });    
+            }); 
+        case "DELETE":
+            let temp = [];
+            let marker = 0;
+            state.map((todo) => {
+                /*if (todo.id === action.id) {
+                    marker = action.id;
+                    return;
+                } else if(marker === 0) {
+                    temp.push(todo);
+                }
+                else {
+                    let newId = marker++;
+                    temp.push({...todo, id: newId});
+                }*/
+                if (todo.id === action.id) {
+                    marker = action.id;
+                    return;
+                }
+                else{
+                    temp.push({...todo, id: marker++});
+                }    
+            });
+            return temp;   
         default:
             return state;  
     }
@@ -71,12 +97,12 @@ const reducer = (state, action) => {
 
 function Todo(){
 const [todos, dispatch] = useReducer(reducer, initial);
-const [inputValue, setInputValue] = useState("Click here to edit");
 
 const handleCompleted = (todo) => { dispatch({ type: "COMPLETE", id: todo.id }); };
 const handleAdd = () => { dispatch({ type: "ADD"}); };
 const handleEdit = (todo) => { dispatch( { type: "EDIT", id: todo.id})};
 const handleSave = (todo,text) => { dispatch( { type: "SAVE", id: todo.id, textValue: text})};
+const handleDelete = (todo) => { dispatch( {type: "DELETE", id: todo.id })};
 
 return(
     <>
@@ -97,9 +123,7 @@ return(
                 <label >
                     <input id="editBox"
                         type= "text"
-                        //value = {inputValue}
                         hidden= {!todo.editMode}
-                        //onChange={(e) => setInputValue(e.target.value)}
                         value= {todo.textValue}
                         onChange={(e) => handleSave(todo,e.target.value)}
                     />
@@ -107,6 +131,7 @@ return(
                 {!todo.editMode ? todo.textValue : ""}
                 </label>
             </label>
+            <button className="delete" key={"btn" + todo.id} onClick={() => handleDelete(todo)}>x</button>
             </div>
         ))}
         </div>
