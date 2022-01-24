@@ -20,6 +20,14 @@ const initial = [
     },
 ];
 
+const fixNumbers = (array) => {
+    let tempId = 0;
+    let tempArray = [];
+    array.map((todo) => { tempArray.push({...todo, id: ++tempId}) });
+    return tempArray; 
+}
+
+
 const reducer = (state, action) => {
     switch (action.type) {
         case "COMPLETE":
@@ -33,7 +41,6 @@ const reducer = (state, action) => {
         case "ADD":
             let newNum = 1;
             if(state.length>0){
-                //console.log(state);
                 const lastTodo = state[state.length - 1];
                 newNum = lastTodo.id + 1; 
             }
@@ -44,11 +51,10 @@ const reducer = (state, action) => {
                 editMode: false,
                 textValue: "Click here to edit",
             }
-            //console.log(...state,newTodo);
-            const newState = [...state,newTodo]
+            let newState = [...state,newTodo]
+            newState = fixNumbers(newState);
             return newState;   
         case "EDIT":
-            //console.log(action.id);
             return state.map((todo) => {
                 if (todo.id === action.id) {
                     return { ...todo, editMode: !todo.editMode};
@@ -57,8 +63,6 @@ const reducer = (state, action) => {
             }
             });
         case "SAVE":
-            //console.log(action.id);
-            //console.log(action.textValue);
             return state.map((todo) => {
                 if (todo.id === action.id) {
                     return { ...todo, textValue: action.textValue};
@@ -70,25 +74,16 @@ const reducer = (state, action) => {
             let temp = [];
             let marker = 0;
             state.map((todo) => {
-                /*if (todo.id === action.id) {
-                    marker = action.id;
-                    return;
-                } else if(marker === 0) {
-                    temp.push(todo);
-                }
-                else {
-                    let newId = marker++;
-                    temp.push({...todo, id: newId});
-                }*/
                 if (todo.id === action.id) {
-                    marker = action.id;
                     return;
                 }
                 else{
-                    temp.push({...todo, id: marker++});
+                    let tempVal = ++marker;
+                    temp.push({...todo, id: tempVal, title: "ToDo " + tempVal + " : "});
                 }    
             });
-            return temp;   
+            temp = fixNumbers(temp);
+            return temp;       
         default:
             return state;  
     }
